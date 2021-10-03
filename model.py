@@ -52,6 +52,8 @@ class Discriminator(nn.Module):
 
 		self.fc3=nn.Linear(in_features=512,out_features=1)
 
+		self.sig=nn.Sigmoid()
+
 	def forward(self, input):
 		output=self.conv1(input)
 		output=self.relu1(output)
@@ -83,6 +85,7 @@ class Discriminator(nn.Module):
 		output=self.relu7(output)
 		
 		output=self.fc3(output)
+		output=self.sig(output)
 			
 		return output
 
@@ -136,42 +139,43 @@ class Generator(nn.Module):
 		self.convt3=nn.ConvTranspose2d(in_channels=32,out_channels=10,kernel_size=3,stride=1,padding=1)
 		#Shape= (10,224,224)
 		self.relu6=nn.ReLU()
+		self.tan=nn.Tanh()
 
 	def forward(self, input):
 		
 		# encoder ---------------------------------------------------------------------------------
-		print("---------- encoder ----------")
-		print(input.shape)
+		#print("---------- encoder ----------")
+		#print(input.shape)
 		output=self.conv1(input)
 		output=self.relu1(output)
 		output, indices1 =self.pool1(output)
-		print(output.shape)
+		#print(output.shape)
 
 		output=self.conv2(output)
 		output=self.relu2(output)
 		output, indices2=self.pool2(output)
-		print(output.shape)
+		#print(output.shape)
 
 		output=self.conv3(output)
 		output=self.relu3(output)
 		output, indices3=self.pool3(output)
-		print(output.shape)
+		#print(output.shape)
 
 		# decoder ---------------------------------------------------------------------------------
-		print("---------- decoder ----------")
+		#print("---------- decoder ----------")
 		output=self.unpool1(output,indices3)
 		output=self.convt1(output)
 		output=self.relu4(output)
-		print(output.shape)
+		#print(output.shape)
 
 		output=self.unpool2(output,indices2)
 		output=self.convt2(output)
 		output=self.relu5(output)
-		print(output.shape)
+		#print(output.shape)
 
 		output=self.unpool3(output,indices1)
 		output=self.convt3(output)
-		output=self.relu6(output)
-		print(output.shape)
+		output=self.tan(output)
+		#print(output.shape)
 
 		return output

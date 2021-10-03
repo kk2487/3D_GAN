@@ -1,0 +1,13 @@
+*.npy
+*.swp
+*.mp4
+*.dat
+*.avi
+*.jpg
+*.xlsx
+*.pt
+*.pth
+images/
+checkpoints/
+
+__pycache__/

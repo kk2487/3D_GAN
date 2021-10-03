@@ -27,7 +27,7 @@ class ImageDataset(Dataset):
 
 
 
-        print(len(tmp_list))
+        #print(len(tmp_list))
         self.tenImageFiles = tmp_list
         self.firstImageFiles = [img[0] for img in self.tenImageFiles]
 
@@ -53,6 +53,7 @@ class ImageDataset(Dataset):
         # print(img_A.shape)
         # print(img_B[0].shape)
         return {"A": img_A, "B": img_B}
+
 
     def __len__(self):
         return len(self.tenImageFiles)

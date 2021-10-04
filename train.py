@@ -28,7 +28,8 @@ def train(opt):
 	generator = Generator(opt)
 	print("---------------------------- Generator ----------------------------")
 	print(generator)
-	discriminator = Discriminator(opt)
+	discriminator = Discriminator(BasicBlock, [3, 4, 6, 3], opt = opt)
+
 	print("---------------------------- Discriminator ----------------------------")
 	print(discriminator)
 
@@ -40,9 +41,10 @@ def train(opt):
 		adversarial_loss.cuda()
 
 	# Optimizers
-	optimizer_G = torch.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-	optimizer_D = torch.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+	optimizer_G = torch.optim.Adam(filter(lambda p: p.requires_grad, generator.parameters()), lr=opt.lr, betas=(opt.b1, opt.b2))
+	optimizer_D = torch.optim.Adam(filter(lambda p: p.requires_grad, discriminator.parameters()), lr=opt.lr, betas=(opt.b1, opt.b2))
 
+	
 	transforms_ = [
 		transforms.Resize((opt.img_size, opt.img_size), Image.BICUBIC),
 		transforms.ToTensor(),
@@ -81,11 +83,12 @@ def train(opt):
 			real_B = Variable(batch["B"].type(Tensor))
 
 			# Adversarial ground truths
-			valid = Variable(Tensor(np.ones((real_A.size(0)))), requires_grad=False)
-			fake = Variable(Tensor(np.zeros((real_A.size(0)))), requires_grad=False)
+			valid = Variable(Tensor(np.ones((real_A.size(0)), dtype=float)), requires_grad=False)
+			fake = Variable(Tensor(np.zeros((real_A.size(0)), dtype=float)), requires_grad=False)
 			valid = valid.view(valid.size(0), -1)
 			fake = fake.view(fake.size(0), -1)
-			
+			#print(valid.shape)
+			#print(fake.shape)
 			#  Train Generator
 			optimizer_G.zero_grad()
 
@@ -100,9 +103,10 @@ def train(opt):
 			#  Train Discriminator
 			optimizer_D.zero_grad()
 			# Measure discriminator's ability to classify real from generated samples
-
-			real_B = real_B.view(real_B.size(0), real_B.size(1), real_B.size(3), real_B.size(4))
-
+			#print(real_B.shape)
+			#real_B = real_B.view(real_B.size(0), real_B.size(1), real_B.size(3), real_B.size(4))
+			#print(real_B.shape)
+			#print(gen_imgs.shape)
 			real_loss = adversarial_loss(discriminator(real_B), valid)
 			fake_loss = adversarial_loss(discriminator(gen_imgs.detach()), fake)
 			d_loss = (real_loss + fake_loss) / 2

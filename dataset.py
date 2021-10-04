@@ -50,8 +50,9 @@ class ImageDataset(Dataset):
         img_A = self.transform(img_A)
         img_B = torch.stack([self.transform(img) for img in img_B])
         # img_B = self.transform(img_B)
-        # print(img_A.shape)
-        # print(img_B[0].shape)
+        img_B = torch.squeeze(img_B)
+        #print(img_A.shape)
+        #print(img_B.shape)
         return {"A": img_A, "B": img_B}
 
 

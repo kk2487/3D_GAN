@@ -128,4 +128,5 @@ def train(opt):
 			torch.save(generator, 'checkpoints/G_epoch_{}.pth'.format(epoch))
 			torch.save(discriminator, 'checkpoints/D_epoch_{}.pth'.format(epoch))
 
-		
+	torch.save(generator, 'checkpoints/G_epoch_final.pth')
+	torch.save(discriminator, 'checkpoints/D_epoch_final.pth')
